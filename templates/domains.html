@@ -19,6 +19,19 @@
 <body>
 <div class="container mt-4">
     <h1>Список доменов</h1>
+ <div class="alert alert-info mb-3">
+    <div class="row">
+        <div class="col-md-4">
+            <strong>Всего доменов:</strong> {{ total_domains }}
+        </div>
+        <div class="col-md-4">
+            <strong>Текущая страница:</strong> {{ page }} из {{ total_pages }}
+        </div>
+        <div class="col-md-4">
+            <strong>Показано:</strong> {{ domains|length }} доменов
+        </div>
+    </div>
+</div>
     <table class="table table-striped table-bordered table-hover">
         <thead class="table-dark">
             <tr>
@@ -49,22 +62,65 @@
     </table>
     <nav aria-label="Навигация по страницам">
       <ul class="pagination justify-content-center">
+        <!-- Кнопка "Назад" -->
         {% if page > 1 %}
-          <li class="page-item"><a class="page-link" href="{{ url_for('domains_page', page=page-1) }}">Назад</a></li>
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('domains_page', page=page-1) }}">Назад</a>
+          </li>
         {% else %}
-          <li class="page-item disabled"><a class="page-link" href="#">Назад</a></li>
+          <li class="page-item disabled">
+            <a class="page-link" href="#">Назад</a>
+          </li>
         {% endif %}
 
-        {% for p in range(1, total_pages+1) %}
+        <!-- Первые страницы -->
+        {% for p in range(1, [5, total_pages + 1]|min) %}
           <li class="page-item {% if p == page %}active{% endif %}">
             <a class="page-link" href="{{ url_for('domains_page', page=p) }}">{{ p }}</a>
           </li>
         {% endfor %}
 
+        <!-- Разделитель, если нужен -->
+        {% if total_pages > 9 and page > 4 and page < total_pages - 3 %}
+          <li class="page-item disabled">
+            <a class="page-link" href="#">...</a>
+          </li>
+        {% endif %}
+
+        <!-- Текущая страница и соседние (если они не входят в первые/последние 4) -->
+        {% if page > 4 and page < total_pages - 3 %}
+          {% for p in range([page - 1, 5]|max, [page + 2, total_pages - 3]|min) %}
+            <li class="page-item {% if p == page %}active{% endif %}">
+              <a class="page-link" href="{{ url_for('domains_page', page=p) }}">{{ p }}</a>
+            </li>
+          {% endfor %}
+        {% endif %}
+
+        <!-- Разделитель, если нужен -->
+        {% if total_pages > 9 and page < total_pages - 3 %}
+          <li class="page-item disabled">
+            <a class="page-link" href="#">...</a>
+          </li>
+        {% endif %}
+
+        <!-- Последние страницы -->
+        {% if total_pages > 4 %}
+          {% for p in range([total_pages - 3, 5]|max, total_pages + 1) %}
+            <li class="page-item {% if p == page %}active{% endif %}">
+              <a class="page-link" href="{{ url_for('domains_page', page=p) }}">{{ p }}</a>
+            </li>
+          {% endfor %}
+        {% endif %}
+
+        <!-- Кнопка "Вперёд" -->
         {% if page < total_pages %}
-          <li class="page-item"><a class="page-link" href="{{ url_for('domains_page', page=page+1) }}">Вперёд</a></li>
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('domains_page', page=page+1) }}">Вперёд</a>
+          </li>
         {% else %}
-          <li class="page-item disabled"><a class="page-link" href="#">Вперёд</a></li>
+          <li class="page-item disabled">
+            <a class="page-link" href="#">Вперёд</a>
+          </li>
         {% endif %}
       </ul>
     </nav>

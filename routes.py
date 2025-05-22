@@ -26,7 +26,9 @@ def init_routes(app):
         
         # Вычисляем общее количество страниц
         total_pages = math.ceil(total / per_page)
-        
+
+
+
         # Получаем данные для текущей страницы
         offset = (page - 1) * per_page
         cur.execute(
@@ -43,5 +45,6 @@ def init_routes(app):
             "domains.html",
             domains=domains,
             page=page,
-            total_pages=total_pages
+            total_pages=total_pages,
+            total_domains=total
         )
