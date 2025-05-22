@@ -14,7 +14,28 @@
     .pagination {
       margin-top: 20px;
     }
+    th a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    position: relative;
+  }
+
+  th a:hover {
+    color: #f0f0f0;
+    text-decoration: underline;
+  }
+
+  th a::after {
+    position: absolute;
+    right: 8px;
+    top: 0;
+  }
   </style>
+    {{ moment.include_moment() }}
+    <script>
+        moment.locale('ru');
+    </script>
 </head>
 <body>
 <div class="container mt-4">
@@ -32,98 +53,164 @@
         </div>
     </div>
 </div>
-    <table class="table table-striped table-bordered table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Домен</th>
-                <th>Дата освобождения</th>
-                <th>ИКС</th>
-                <th>Возраст</th>
-                <th>Юр.</th>
-                <th>Ставка</th>
-                <th>Links Expired</th>
-            </tr>
-        </thead>
-        <tbody>
-       {% for domain in domains %}
-            <tr>
-                <td>{{ domain.id }}</td>
-                <td>{{ domain.domain }}</td>
-                <td>{{ domain.time_free }}</td>
-                <td>{{ domain.iks }}</td>
-                <td>{{ domain.age }}</td>
-                <td>{{ domain.is_org }}</td>
-                <td>{{ domain.bet }}</td>
-                <td>{{ domain.links_expired }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <nav aria-label="Навигация по страницам">
-      <ul class="pagination justify-content-center">
-        <!-- Кнопка "Назад" -->
-        {% if page > 1 %}
-          <li class="page-item">
-            <a class="page-link" href="{{ url_for('domains_page', page=page-1) }}">Назад</a>
-          </li>
-        {% else %}
-          <li class="page-item disabled">
-            <a class="page-link" href="#">Назад</a>
-          </li>
-        {% endif %}
+   <table class="table table-striped table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>
+                <a href="{{ url_for('domains_page', sort='id', direction='asc' if sort_by != 'id' or sort_dir == 'desc' else 'desc', page=page) }}">
+                    ID
+                    {% if sort_by == 'id' %}
+                        {% if sort_dir == 'asc' %}↑{% else %}↓{% endif %}
+                    {% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ url_for('domains_page', sort='domain', direction='asc' if sort_by != 'domain' or sort_dir == 'desc' else 'desc', page=page) }}">
+                    Домен
+                    {% if sort_by == 'domain' %}
+                        {% if sort_dir == 'asc' %}↑{% else %}↓{% endif %}
+                    {% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ url_for('domains_page', sort='time_free', direction='asc' if sort_by != 'time_free' or sort_dir == 'desc' else 'desc', page=page) }}">
+                    Дата освобождения
+                    {% if sort_by == 'time_free' %}
+                        {% if sort_dir == 'asc' %}↑{% else %}↓{% endif %}
+                    {% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ url_for('domains_page', sort='iks', direction='asc' if sort_by != 'iks' or sort_dir == 'desc' else 'desc', page=page) }}">
+                    ИКС
+                    {% if sort_by == 'iks' %}
+                        {% if sort_dir == 'asc' %}↑{% else %}↓{% endif %}
+                    {% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ url_for('domains_page', sort='age', direction='asc' if sort_by != 'age' or sort_dir == 'desc' else 'desc', page=page) }}">
+                    Возраст
+                    {% if sort_by == 'age' %}
+                        {% if sort_dir == 'asc' %}↑{% else %}↓{% endif %}
+                    {% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ url_for('domains_page', sort='is_org', direction='asc' if sort_by != 'is_org' or sort_dir == 'desc' else 'desc', page=page) }}">
+                    Юр.
+                    {% if sort_by == 'is_org' %}
+                        {% if sort_dir == 'asc' %}↑{% else %}↓{% endif %}
+                    {% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ url_for('domains_page', sort='bet', direction='asc' if sort_by != 'bet' or sort_dir == 'desc' else 'desc', page=page) }}">
+                    Ставка
+                    {% if sort_by == 'bet' %}
+                        {% if sort_dir == 'asc' %}↑{% else %}↓{% endif %}
+                    {% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ url_for('domains_page', sort='links_expired', direction='asc' if sort_by != 'links_expired' or sort_dir == 'desc' else 'desc', page=page) }}">
+                    Links Expired
+                    {% if sort_by == 'links_expired' %}
+                        {% if sort_dir == 'asc' %}↑{% else %}↓{% endif %}
+                    {% endif %}
+                </a>
+            </th>
+               <th>
+                <a href="{{ url_for('domains_page', sort='updated_at', direction='asc' if sort_by != 'updated_at' or sort_dir == 'desc' else 'desc', page=page) }}">
+                    Обновлен
+                    {% if sort_by == 'updated_at' %}
+                        {% if sort_dir == 'asc' %}↑{% else %}↓{% endif %}
+                    {% endif %}
+                </a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for domain in domains %}
+        <tr>
+            <td>{{ domain.id }}</td>
+            <td>{{ domain.domain }}</td>
+            <td>{{ domain.time_free }}</td>
+            <td>{{ domain.iks }}</td>
+            <td>{{ domain.age }}</td>
+            <td>{{ domain.is_org }}</td>
+            <td>{{ domain.bet }}</td>
+            <td>{{ domain.links_expired }}</td>
+            <td>{{ moment(domain.updated_at).format('LLL') }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
-        <!-- Первые страницы -->
-        {% for p in range(1, [5, total_pages + 1]|min) %}
-          <li class="page-item {% if p == page %}active{% endif %}">
-            <a class="page-link" href="{{ url_for('domains_page', page=p) }}">{{ p }}</a>
-          </li>
-        {% endfor %}
+ <nav aria-label="Навигация по страницам">
+  <ul class="pagination justify-content-center">
+    <!-- Кнопка "Назад" -->
+    {% if page > 1 %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('domains_page', page=page-1, sort=sort_by, direction=sort_dir) }}" aria-label="Предыдущая">
+          <span aria-hidden="true">&laquo;</span> Назад
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="#" aria-label="Предыдущая">
+          <span aria-hidden="true">&laquo;</span> Назад
+        </a>
+      </li>
+    {% endif %}
 
-        <!-- Разделитель, если нужен -->
-        {% if total_pages > 9 and page > 4 and page < total_pages - 3 %}
-          <li class="page-item disabled">
-            <a class="page-link" href="#">...</a>
-          </li>
-        {% endif %}
+    <!-- Первая страница -->
+    {% if page > 3 %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('domains_page', page=1, sort=sort_by, direction=sort_dir) }}">1</a>
+      </li>
+      {% if page > 4 %}
+        <li class="page-item disabled">
+          <a class="page-link" href="#">...</a>
+        </li>
+      {% endif %}
+    {% endif %}
 
-        <!-- Текущая страница и соседние (если они не входят в первые/последние 4) -->
-        {% if page > 4 and page < total_pages - 3 %}
-          {% for p in range([page - 1, 5]|max, [page + 2, total_pages - 3]|min) %}
-            <li class="page-item {% if p == page %}active{% endif %}">
-              <a class="page-link" href="{{ url_for('domains_page', page=p) }}">{{ p }}</a>
-            </li>
-          {% endfor %}
-        {% endif %}
+    <!-- Страницы вокруг текущей -->
+    {% for p in range([1, page-2]|max, [total_pages+1, page+3]|min) %}
+      <li class="page-item {% if p == page %}active{% endif %}">
+        <a class="page-link" href="{{ url_for('domains_page', page=p, sort=sort_by, direction=sort_dir) }}">{{ p }}</a>
+      </li>
+    {% endfor %}
 
-        <!-- Разделитель, если нужен -->
-        {% if total_pages > 9 and page < total_pages - 3 %}
-          <li class="page-item disabled">
-            <a class="page-link" href="#">...</a>
-          </li>
-        {% endif %}
+    <!-- Последняя страница -->
+    {% if page < total_pages - 2 %}
+      {% if page < total_pages - 3 %}
+        <li class="page-item disabled">
+          <a class="page-link" href="#">...</a>
+        </li>
+      {% endif %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('domains_page', page=total_pages, sort=sort_by, direction=sort_dir) }}">{{ total_pages }}</a>
+      </li>
+    {% endif %}
 
-        <!-- Последние страницы -->
-        {% if total_pages > 4 %}
-          {% for p in range([total_pages - 3, 5]|max, total_pages + 1) %}
-            <li class="page-item {% if p == page %}active{% endif %}">
-              <a class="page-link" href="{{ url_for('domains_page', page=p) }}">{{ p }}</a>
-            </li>
-          {% endfor %}
-        {% endif %}
-
-        <!-- Кнопка "Вперёд" -->
-        {% if page < total_pages %}
-          <li class="page-item">
-            <a class="page-link" href="{{ url_for('domains_page', page=page+1) }}">Вперёд</a>
-          </li>
-        {% else %}
-          <li class="page-item disabled">
-            <a class="page-link" href="#">Вперёд</a>
-          </li>
-        {% endif %}
-      </ul>
-    </nav>
+    <!-- Кнопка "Вперёд" -->
+    {% if page < total_pages %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('domains_page', page=page+1, sort=sort_by, direction=sort_dir) }}" aria-label="Следующая">
+          Вперёд <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="#" aria-label="Следующая">
+          Вперёд <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
 </div>
 
 <!-- Bootstrap JS Bundle с Popper -->

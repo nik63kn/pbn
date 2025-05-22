@@ -24,7 +24,7 @@ def parse_int(val):
     try:
         return int(val)
     except (ValueError, TypeError):
-        return None
+        return 0
 
 def parse_row(row):
     return (
@@ -33,7 +33,7 @@ def parse_row(row):
         datetime.strptime(row['Дата освобождения'], '%Y-%m-%d').date() if row['Дата освобождения'] else None,
         parse_int(row['ИКС']),
         parse_int(row['Возраст']),
-        row['Юр.'] if row['Юр.'] else None,
+        row['Юр.'] if row['Юр.'] else 'no',
         parse_int(row['Links']),
     )
 
