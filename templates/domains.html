@@ -53,6 +53,88 @@
         </div>
     </div>
 </div>
+<div class="card mb-4">
+  <div class="card-header bg-light">
+    <h5 class="mb-0">Фильтры</h5>
+  </div>
+  <div class="card-body">
+    <form method="get" id="filter-form">
+      <!-- Скрытые поля для сохранения параметров сортировки -->
+      <input type="hidden" name="sort" value="{{ sort_by }}">
+      <input type="hidden" name="direction" value="{{ sort_dir }}">
+      <input type="hidden" name="page" value="1">
+
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="domain">Домен</label>
+          <input type="text" class="form-control" id="domain" name="domain" value="{{ request.args.get('domain', '') }}">
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label for="time_free">Дата освобождения</label>
+          <input type="date" class="form-control" id="time_free" name="time_free" value="{{ request.args.get('time_free', '') }}">
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label for="is_org">Юр. лицо</label>
+          <select class="form-control" id="is_org" name="is_org">
+            <option value="">Все</option>
+            <option value="yes" {% if request.args.get('is_org') == 'yes' %}selected{% endif %}>Да</option>
+            <option value="no" {% if request.args.get('is_org') == 'no' %}selected{% endif %}>Нет</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mb-3">
+          <label for="iks_min">ИКС от</label>
+          <input type="number" class="form-control" id="iks_min" name="iks_min" value="{{ request.args.get('iks_min', '') }}">
+        </div>
+
+        <div class="col-md-3 mb-3">
+          <label for="iks_max">ИКС до</label>
+          <input type="number" class="form-control" id="iks_max" name="iks_max" value="{{ request.args.get('iks_max', '') }}">
+        </div>
+
+        <div class="col-md-3 mb-3">
+          <label for="age_min">Возраст от</label>
+          <input type="number" class="form-control" id="age_min" name="age_min" value="{{ request.args.get('age_min', '') }}">
+        </div>
+
+        <div class="col-md-3 mb-3">
+          <label for="age_max">Возраст до</label>
+          <input type="number" class="form-control" id="age_max" name="age_max" value="{{ request.args.get('age_max', '') }}">
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary">Применить фильтры</button>
+        <a href="{{ url_for('domains_page') }}" class="btn btn-outline-secondary">Сбросить все фильтры</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% if applied_filters %}
+<div class="mb-4">
+  <h6>Примененные фильтры:</h6>
+  <div class="d-flex flex-wrap gap-2">
+    {% for key, value in applied_filters.items() %}
+      <span class="badge bg-info text-dark">
+        {% if key == 'domain' %}Домен: {{ value }}{% endif %}
+        {% if key == 'time_free' %}Дата: {{ value }}{% endif %}
+        {% if key == 'iks_min' %}ИКС от: {{ value }}{% endif %}
+        {% if key == 'iks_max' %}ИКС до: {{ value }}{% endif %}
+        {% if key == 'age_min' %}Возраст от: {{ value }}{% endif %}
+        {% if key == 'is_org' %}Юр. лицо: {{ value }}{% endif %}
+        <a href="#" onclick="removeFilter('{{ key }}')" class="text-dark ms-1" title="Удалить фильтр">&times;</a>
+      </span>
+    {% endfor %}
+    <a href="{{ url_for('domains_page', sort=sort_by, direction=sort_dir) }}" class="btn btn-sm btn-outline-danger">Сбросить все</a>
+  </div>
+</div>
+{% endif %}
+
    <table class="table table-striped table-bordered table-hover">
     <thead class="table-dark">
         <tr>
@@ -114,7 +196,7 @@
             </th>
             <th>
                 <a href="{{ url_for('domains_page', sort='links_expired', direction='asc' if sort_by != 'links_expired' or sort_dir == 'desc' else 'desc', page=page) }}">
-                    Links Expired
+                    Ссылки
                     {% if sort_by == 'links_expired' %}
                         {% if sort_dir == 'asc' %}↑{% else %}↓{% endif %}
                     {% endif %}
@@ -215,5 +297,44 @@
 
 <!-- Bootstrap JS Bundle с Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Автоматическая отправка формы при изменении значений
+document.querySelectorAll('#filter-form select').forEach(select => {
+  select.addEventListener('change', () => {
+    document.getElementById('filter-form').submit();
+  });
+});
+
+// Функция для удаления отдельного фильтра
+function removeFilter(filterName) {
+  const url = new URL(window.location);
+  url.searchParams.delete(filterName);
+  window.location = url;
+}
+
+// Функция для сброса всех фильтров с сохранением сортировки
+function resetAllFilters() {
+  const url = new URL(window.location);
+  const sort = url.searchParams.get('sort');
+  const direction = url.searchParams.get('direction');
+
+  url.search = '';
+
+  if (sort) url.searchParams.set('sort', sort);
+  if (direction) url.searchParams.set('direction', direction);
+
+  window.location = url;
+}
+</script>
+<script>
+function removeFilter(key) {
+    const url = new URL(window.location);
+    url.searchParams.delete(key);
+    window.location = url.toString();
+    return false;
+}
+</script>
+
 </body>
 </html>
