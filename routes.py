@@ -1,6 +1,6 @@
 from flask import render_template, request
 import math
-from models import db, Domain
+from models import Domain
 
 
 def init_routes(app):
