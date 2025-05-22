@@ -46,16 +46,16 @@
             </tr>
         </thead>
         <tbody>
-        {% for domain in domains %}
+       {% for domain in domains %}
             <tr>
-                <td>{{ domain[0] }}</td>
-                <td>{{ domain[1] }}</td>
-                <td>{{ domain[2] }}</td>
-                <td>{{ domain[3] }}</td>
-                <td>{{ domain[4] }}</td>
-                <td>{{ domain[5] }}</td>
-                <td>{{ domain[6] }}</td>
-                <td>{{ domain[7] }}</td>
+                <td>{{ domain.id }}</td>
+                <td>{{ domain.domain }}</td>
+                <td>{{ domain.time_free }}</td>
+                <td>{{ domain.iks }}</td>
+                <td>{{ domain.age }}</td>
+                <td>{{ domain.is_org }}</td>
+                <td>{{ domain.bet }}</td>
+                <td>{{ domain.links_expired }}</td>
             </tr>
         {% endfor %}
         </tbody>
