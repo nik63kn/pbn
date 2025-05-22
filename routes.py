@@ -13,6 +13,21 @@ def init_routes(app):
         domain = Domain.query.first()
         return f"Updated at: {domain.updated_at}, Type: {type(domain.updated_at)}"
 
+    @app.template_filter('pluralize_domains')
+    def pluralize_domains(count):
+        """Возвращает правильную форму слова 'домен' в зависимости от числа"""
+        remainder100 = count % 100
+        remainder10 = count % 10
+
+        if 11 <= remainder100 <= 19:
+            return "доменов"
+        elif remainder10 == 1:
+            return "домен"
+        elif 2 <= remainder10 <= 4:
+            return "домена"
+        else:
+            return "доменов"
+
     @app.route("/domains")
     def domains_page():
         # Базовые параметры
