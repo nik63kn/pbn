@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>Домены</title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.5">
+  <style type="text/css">
+  </style>
+</head>
+<body>
+
+</body>
+<div class="container mt-4">
+    <h1>Список доменов</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Домен</th>
+                <th>Дата освобождения</th>
+                <th>ИКС</th>
+                <th>Возраст</th>
+                <th>Юр.</th>
+                <th>Ставка</th>
+                <th>Links Expired</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for domain in domains %}
+            <tr>
+                <td>{{ domain[0] }}</td>
+                <td>{{ domain[1] }}</td>
+                <td>{{ domain[2] }}</td>
+                <td>{{ domain[3] }}</td>
+                <td>{{ domain[4] }}</td>
+                <td>{{ domain[5] }}</td>
+                <td>{{ domain[6] }}</td>
+                <td>{{ domain[7] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <nav>
+      <ul class="pagination">
+        {% if page > 1 %}
+          <li class="page-item"><a class="page-link" href="{{ url_for('domains_page', page=page-1) }}">Назад</a></li>
+        {% endif %}
+        {% for p in range(1, total_pages+1) %}
+          <li class="page-item {% if p == page %}active{% endif %}">
+            <a class="page-link" href="{{ url_for('domains_page', page=p) }}">{{ p }}</a>
+          </li>
+        {% endfor %}
+        {% if page < total_pages %}
+          <li class="page-item"><a class="page-link" href="{{ url_for('domains_page', page=page+1) }}">Вперёд</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+</div></html>
